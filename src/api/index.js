@@ -12,3 +12,6 @@ export const reqCategoryList = ()=>requests({url:'/api/product/getBaseCategoryLi
 //获取banner(Home首页的轮播图接口)
 //get('/mock/banner)里面的mock不能丢了，不然无法直接请求banner
 export const reqGetBannerList = ()=>mockRequests.get('/mock/banner');
+
+//获取floor数据
+export const reqFloorList = ()=>mockRequests.get('/mock/floor')

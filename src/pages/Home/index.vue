@@ -6,8 +6,7 @@
     <Recommend/>
     <Rank/>
     <Like/>
-    <Floor/>
-    <Floor/>
+    <Floor v-for="(floor,index) in floorList" :key="floor.id" :list="floor"/>
     <Brand/>
     
   </div>
@@ -33,6 +32,15 @@
       Floor,
       Brand
     },
+    mounted(){
+      //派发action,获取floor数据
+      this.$store.dispatch("getFloorList");
+    },
+    computed:{
+      ...mapState({
+        floorList:state => state.home.floorList
+      })
+    }
   }
 </script>
 
