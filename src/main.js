@@ -11,6 +11,9 @@ Vue.component(Carousel.name,Carousel)
 
 //引入MockServer.js
 import '@/mock/mockServe'
+// import {reqGetSearchInfo} from '@/api';
+// console.log(reqGetSearchInfo({}))
+
 //引入swiper样式，全局
 import "swiper/css/swiper.css"
 
