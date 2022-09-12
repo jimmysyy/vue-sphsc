@@ -27,14 +27,15 @@ const actions = {
 
 const getters = {
     //当前形参state,当前仓库中的state，并非大仓库中的那个state
+    //要预防没数据的情况
     goodsList(state){
-        return state.searchList.goodsList;
+        return state.searchList.goodsList||[];
     },
     trademarkList(state){
-        return state.searchList.trademarkList;
+        return state.searchList.trademarkList||[];
     },
     attrsList(state){
-        return state.searchList.attrsList;
+        return state.searchList.attrsList||[];
     },
 };
 

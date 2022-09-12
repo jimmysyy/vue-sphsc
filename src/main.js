@@ -35,6 +35,11 @@ import store from './store';
 new Vue({
   
   render: h => h(App),
+  //全局事件总线
+  beforeCreate(){
+    Vue.prototype.$bus = this;
+  },
+
   //router必须小写，KV一致省略V
   //注册路由信息:组件身上都拥有$route,$route属性
   router,

@@ -125,27 +125,35 @@ export default {
       }
     },
     goSearch(event) {
-      let element = event.target;
-      // let {categoryname,category1id,category2id,category3id} = element.dataset;
-      let { categoryname, category1id, category2id, category3id } = element.dataset;
+      //第一个问题:div父节点子元素太多【h3、h2、em、dt、dd、dl...a】？你怎么知道你点击的一定是a
+      //第二个问题:要区分一级分类、二级分类、三级分类的a标签【category1Id|category2Id|category2Id】
+      let targetNode = event.target;
+      //获取触发事件节点的自定义属性【a:data-categoryName】
+      let { categoryname, category1id, category2id, category3id } =
+        targetNode.dataset;
+      //判断点击的是a【不管是1|2|3】
       if (categoryname) {
-        //整理路由跳转的参数
-        let location = { name: "search" };
-        let query = { categoryName: categoryname };
+        //点击只要是a,就是往search模块跳转
+        var locations = {
+          name: "search",
+          query: { categoryName: categoryname },
+        };
+        //一级分类的a
         if (category1id) {
-          query.category1Id = category1id;
+          locations.query.category1Id = category1id;
         } else if (category2id) {
-          query.category2Id = category2id;
+          //二级分类的a
+          locations.query.category2Id = category2id;
         } else {
-          query.category3Id = category3id;
+          //三级分类的a
+          locations.query.category3Id = category3id;
         }
-        //整理参数
-        // console.log(location,query)
-        if(this.$route.params){
-          location.query = query;
-          //路由跳转
-          this.$router.push(location);
+        //点击商品分类按钮的时候,如果路径当中携带params参数,需要合并携带给search模块
+        if (this.$route.params.keyword) {
+          locations.params = this.$route.params;
         }
+        //目前商品分类这里携带参数只有query参数
+        this.$router.push(locations);
       }
     },
     //鼠标移入展示商品列表

@@ -62,24 +62,53 @@ export default {
   },
   methods:{
     //搜索按钮的回调函数，需要向search路由跳转
-    goSearch(){
-      //路由传递参数：
-      //第一种：字符串形式(先是params参数，后query参数)
-      // this.$router.push('/search/' + this.keyword + "?k=" + this.keyword.toUpperCase());
-      //第二种：模板字符串
-      // this.$router.push(`/search/${this.keyword}?{this.keyword.toUpperCase()}`)
-      //第三种：(常用)对象
-      //判断是否有query参数
-      if(this.$route.query){
-        let location = { name:'search', params:{keyword:this.keyword || undefined},};
-        location.query = this.$route.query;
-        this.$router.push(location);
-      }
+    goSearch() {
+      //路由的跳转,采用的是编程式导航.
+      //路由传递参数
+
+      //第一种传递query参数
+      // this.$router.push({path:'/search',query:{keyword:this.keyword}});
+
+      //第二种传递params参数 [一定要注意,面试的时候经常问]
+      // this.$router.push({name:'search',params:{keyword:this.keyword}})
+
+      //第三种传递query+params
       // this.$router.push({
-      //   name:'search',
-      //   params:{keyword:this.keyword || undefined},
-      //   })
-    }
+      //   name: "search",
+      //   params: { keyword: this.keyword },
+      //   query: { keyword: "ABC" },
+      // });
+
+      //验证Vue-Router引入Promise技术,最笨的方法,给push传递第二个、第三个参数【回调函数】
+      //下面这种写法：治标不治本！！！！
+      // let result = this.$router.push({name: "search",params: { keyword: this.keyword|| undefined}},()=>{},()=>{});
+
+      //问题1:push方法,里面this是谁? vueRouter类的实例
+      // this.$router.push({name:'search',params:{keyword:this.keyword}});
+      //问题2:push方法里面的this是谁?windows
+      // let result = this.$router.push;
+      // result({name:'search',params:{keyword:this.keyword}})
+
+      //点击搜索按钮之前,如果路径当中有query参数,需要携带给search
+
+      let locations = {
+        name: "search",
+        params: { keyword: this.keyword || undefined },
+      };
+      //确定路径当中有query参数
+      if (this.$route.query.categoryName) {
+        locations.query = this.$route.query;
+      }
+
+      this.$router.push(locations);
+    },
+  },
+  //全局事件总线接收
+  mounted(){
+    //通过全局事件总线清楚关键字
+    this.$bus.$on("clear",()=>{
+      this.keyword = '';
+    })
   }
 };
 </script>
