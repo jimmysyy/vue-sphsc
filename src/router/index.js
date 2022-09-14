@@ -9,6 +9,7 @@ import Home from '@/pages/Home'
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
 import Search from '@/pages/Search'
+import Detail from '@/pages/Detail'
 
 //把VueRouter原型对象的push，先保存一份
 let originPush = VueRouter.prototype.push;
@@ -41,6 +42,11 @@ VueRouter.prototype.replace = function (locaton, resolve, reject) {
 
 export default new VueRouter({
     routes:[
+        {
+            path:"/detail",
+            component:Detail,
+            meta:{show:true}
+        },
         {
             path:"/home",
             component:Home,

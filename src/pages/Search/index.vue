@@ -125,7 +125,13 @@
             </ul>
           </div>
           <!-- 分页器 -->
-          <Pagination/>
+          <Pagination 
+          :pageNo="searchParams.pageNo" 
+          :pageSize="searchParams.pageSize" 
+          :total="total" 
+          :continues="5"
+          @getPageNo="getPageNo"
+          />
         </div>
       </div>
     </div>
@@ -190,6 +196,10 @@ export default {
     isAsc() {
       return this.searchParams.order.indexOf("asc") != -1;
     },
+    //获取search模块一共多少数据
+    ...mapState({
+      total:state=>state.search.searchList.total,
+    })
   },
   methods: {
     //向服务器发请求获取search模块数据（根据参数不同返回不同数据进行展示）
@@ -273,6 +283,13 @@ export default {
       this.searchParams.order = newOrder;
       this.getDate();
     },
+
+    //自定义事件的回调，获取当前页码
+    getPageNo(pageNo){
+      // 整理参数
+      this.searchParams.pageNo = pageNo;
+      this.getDate()
+    }
   },
   //数据监听：监听组件实例身上的属性的属性值变化
   watch: {
