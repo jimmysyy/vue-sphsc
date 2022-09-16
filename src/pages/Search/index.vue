@@ -88,9 +88,10 @@
               >
                 <div class="list-wrap">
                   <div class="p-img">
-                    <a href="item.html" target="_blank">
+                    <!-- 路由跳转时带参数 -->
+                    <router-link :to="`/detail/${good.id}`">
                       <img :src="good.defaultImg"
-                    /></a>
+                    /></router-link>
                   </div>
                   <div class="price">
                     <strong>
@@ -100,14 +101,12 @@
                   </div>
                   <div class="attr">
                     <a
-                      target="_blank"
-                      href="item.html"
-                      title="促销信息，下单即赠送三个月CIBN视频会员卡！【小米电视新品4A 58 火爆预约中】"
+                      :title="good.title"
                       >{{ good.title }}</a
                     >
                   </div>
                   <div class="commit">
-                    <i class="command">已有<span>2000</span>人评价</i>
+                    <i class="command">已有<span>{{good.id}}</span>人评价</i>
                   </div>
                   <div class="operate">
                     <a
