@@ -1,11 +1,12 @@
 <template>
   <div class="spec-preview">
     <img :src="imgObj.imgUrl" />
-    <div class="event"></div>
+    <div class="event" @mousemove="handler"></div>
     <div class="big">
-      <img :src="imgObj.imgUrl" />
+      <img :src="imgObj.imgUrl" ref="big"/>
     </div>
-    <div class="mask"></div>
+    <!-- 遮罩 -->
+    <div class="mask" ref="mask"></div>
   </div>
 </template>
 
@@ -14,10 +15,41 @@
   export default {
     name: "Zoom",
     props:['skuImageList'],
+    data(){
+      return{
+        currentIndex:0,
+      }
+    },
     computed:{
       imgObj(){
-        return this.skuImageList[0]||{};
+        return this.skuImageList[this.currentIndex]||{};
       }
+    },
+    mounted(){
+      //全局事件总线获取兄弟组件传递的索引值
+      this.$bus.$on('getIndex',(index)=>{
+        //修改当前index的值
+        this.currentIndex = index
+      })
+    },
+    methods:{
+      handler(e) {
+      //获取蒙板
+      let mask = this.$refs.mask;
+      let big = this.$refs.big;
+      //计算蒙板的left|top数值
+      let l = e.offsetX - mask.offsetWidth / 2;
+      let t = e.offsetY - mask.offsetHeight / 2;
+      //约束蒙板的上下左右范围
+      if (l < 0) l = 0;
+      if (l > mask.offsetWidth) l = mask.offsetWidth;
+      if (t < 0) t = 0;
+      if (t > mask.offsetHeight) t = mask.offsetHeight;
+      mask.style.left = l + "px";
+      mask.style.top = t + "px";
+      big.style.left = -2 * l + "px";
+      big.style.top = -2 * t + "px";
+    },
     }
   }
 </script>
@@ -46,7 +78,7 @@
     .mask {
       width: 50%;
       height: 50%;
-      background-color: rgba(0, 255, 0, 0.3);
+      background-color: rgba(147, 190, 147, 0.322);
       position: absolute;
       left: 0;
       top: 0;

@@ -22,3 +22,7 @@ export const reqGetSearchInfo = (params)=>requests({url:"/api/list",method:"post
 
 //获取产品详情的接口 URL: /api/item/{skuId}  请求方式：get
 export const reqGoodsInfo = (skuid)=>requests({url:`/api/item/${skuid}`,method:"get"})
+
+//将产品添加到购物车中（获取更新产品的个数）
+// /api/cart/addToCart/{ skuId }/{ skuNum }    请求方式：post
+export const reqAddOrUpdateShopCart = (skuId,skuNum)=>requests({url:`/api/cart/addToCart/${skuId}/${skuNum}`,method:'post'})

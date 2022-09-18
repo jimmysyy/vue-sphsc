@@ -95,12 +95,14 @@
             </div>
             <div class="cartWrap">
               <div class="controls">
-                <input autocomplete="off" class="itxt" />
-                <a href="javascript:" class="plus">+</a>
-                <a href="javascript:" class="mins">-</a>
+                <input autocomplete="off" class="itxt" v-model="skuNum" @change="changeSkuNum"/>
+                <a href="javascript:" class="plus" @click="skuNum++">+</a>
+                <a href="javascript:" class="mins" @click="skuNum>1?skuNum--:skuNum=1">-</a>
               </div>
               <div class="add">
-                <a href="javascript:">加入购物车</a>
+                <!-- 以前的路由跳转为从a到b -->
+                <!-- 这里再加入购物车，进行路由跳转之前，发请求把你购买产品信息通过请求的形式通知服务器，服务器进行响应存储 -->
+                <a href="javascript:" @click="addShopcar">加入购物车</a>
               </div>
             </div>
           </div>
@@ -345,7 +347,11 @@ import { mapGetters } from "vuex";
 
 export default {
   name: "Detail",
-
+  data(){
+    return{
+      skuNum:1,
+    }
+  },
   components: {
     ImageList,
     Zoom,
@@ -371,6 +377,37 @@ export default {
         item.isChecked = 0;
       })
       spuSaleAttrValue.isChecked = 1;
+    },
+    changeSkuNum(event){
+      //修改表单元素数字
+      let value = event.target.value * 1;
+      if(isNaN(value)||value < 1){
+        this.skuNum = 1;
+      }else{
+        this.skuNum = parseInt(value);
+      }
+    },
+    //加入购物车的回调
+    async addShopcar(){
+      //发请求，将产品加入到数据库（通知服务器）
+      //判断是否成功
+      //这个方法要加上async，返回一定是一个promise
+      try{
+        //成功
+        await this.$store.dispatch('addOrUpdateShopCart',{skuId:this.$route.params.skuid,skuNum:this.skuNum});
+
+        //路由跳转
+        //将产品信息传给下一路由组件
+        //简单数据通过query给路由组件传递过去
+        //复杂数据通过会话存储
+        //本地or会话存储，一般是字符串
+        sessionStorage.setItem("SKUINFO",this.skuInfo);
+        this.$router.push({name:'addcartsuccess',query:{skuNum:this.skuNum}});
+        //
+      }catch(error){
+        alert(error.message);
+      }
+      
     }
   }
 };
