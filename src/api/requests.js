@@ -1,14 +1,17 @@
 //对于axios进行二次封装
-import axios from "axios"
+import axios from 'axios';
+
+
 
 //引入进度条和进度条样式
 import nprogress from 'nprogress';
 import "nprogress/nprogress.css";
 //start:进度条开始 done:进度条结束
-
+// 引入store
+import store from '@/store';
 //1：利用axios对象的方法create，去创建一个车axios实例
 //2：request就是axios，只不过配置一下
-const requests =axios.create({
+let requests = axios.create({
     //配置对象
     //基础路径，发请求的时候，路径当中会出现
     baseURL:"/api",
@@ -21,7 +24,16 @@ requests.interceptors.request.use((config)=>{
     //config：配置对象，对象里面有一个属性很重要，header请求头
     //进度条开始动
     nprogress.start();
+    
+    // console.log(store);
+    // 
+    if(store.state.detail.uuid_token){
+        //请求头添加一个字段：和后台商量好
+        config.headers.userTempId = store.state.detail.uuid_token;
+    }
+    
     return config;
+    
 })
 //响应拦截器
 requests.interceptors.response.use((res) => {
@@ -30,10 +42,11 @@ requests.interceptors.response.use((res) => {
     nprogress.done();
 
     return res.data;
-},(error)=>{
+},(err)=>{
+    alert(err.message)
     //失败的回调
-    return Promise.reject(new Error('faile'));
+    return new Promise;
 });
 
-//对外暴露
-export default axios;
+//对外暴露 一定要是Request
+export default requests;

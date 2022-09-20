@@ -1,5 +1,5 @@
 //对于axios进行二次封装
-import axios from "axios"
+import axios from "axios";
 
 //引入进度条和进度条样式
 import nprogress from 'nprogress';
@@ -8,7 +8,7 @@ import "nprogress/nprogress.css";
 
 //1：利用axios对象的方法create，去创建一个车axios实例
 //2：request就是axios，只不过配置一下
-const requests = axios.create({
+let requests = axios.create({
     //配置对象
     //基础路径，发请求的时候，路径当中会出现
     baseURL:"/mock",
@@ -36,4 +36,4 @@ requests.interceptors.response.use((res) => {
 });
 
 //对外暴露
-export default axios;
+export default requests;

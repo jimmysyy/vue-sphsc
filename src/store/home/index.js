@@ -25,16 +25,16 @@ const actions = {
     async categoryList({commit}){
         let result = await reqCategoryList();
         // console.log(result.data)
-        if(result.data.code==200){
-            commit("CATEGORYLIST", result.data.data)
+        if(result.code==200){
+            commit("CATEGORYLIST", result.data)
         }
     },
     
     //获取首页轮播图数据
     async getBannerList({commit}){
         let result= await reqGetBannerList();
-        if(result.data.code==200){
-            commit('GETBANNERLIST', result.data.data)
+        if(result.code==200){
+            commit('GETBANNERLIST', result.data)
         }
         // console.log(result.data)
     },
@@ -42,8 +42,8 @@ const actions = {
     //获取floor数据
     async getFloorList({commit}){
         let result =  await reqFloorList();
-        if(result.data.code==200){
-            commit("FLOORLIST", result.data.data)
+        if(result.code==200){
+            commit("FLOORLIST", result.data)
         }
     }
 };

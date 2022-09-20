@@ -8,7 +8,7 @@
     </button>
     <button v-if="startNumAndEndNum.start > 2">···</button>
 
-    <span v-for="(page, index) in startNumAndEndNum.end" :key="index">
+    <span v-for="(page, index) in startNumAndEndNum.end" :key="page">
       <button
         v-if="page >= startNumAndEndNum.start"
         @click="$emit('getPageNo', page)"
@@ -48,10 +48,10 @@ export default {
       return Math.ceil(this.total / this.pageSize);
     },
     startNumAndEndNum() {
+      let start = 0,end = 0;
       // 解构
       const { continues, pageNo, totalPage } = this;
-      let start = 0,
-        end = 0;
+      
       // 如果页面数比连续页码少
       if (continues > totalPage) {
         start = 1;

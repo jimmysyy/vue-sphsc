@@ -401,7 +401,7 @@ export default {
         //简单数据通过query给路由组件传递过去
         //复杂数据通过会话存储
         //本地or会话存储，一般是字符串
-        sessionStorage.setItem("SKUINFO",this.skuInfo);
+        sessionStorage.setItem("SKUINFO",JSON.stringify(this.skuInfo));
         this.$router.push({name:'addcartsuccess',query:{skuNum:this.skuNum}});
         //
       }catch(error){

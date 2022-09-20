@@ -239,7 +239,7 @@ export default {
     //自定义事件
     //子组件给父组件传递数据的自定义事件的回调
     trademarkInfo(tmId, tmName) {
-      console.log("父组件", tmId, tmName);
+      // console.log("父组件", tmId, tmName);
       //整理品牌相关的搜索条件
       this.searchParams.trademark = `${tmId}:${tmName}`;
       //再次发请求即可
