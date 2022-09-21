@@ -11,35 +11,51 @@
         <div class="cart-th6">操作</div>
       </div>
       <div class="cart-body">
-        <ul class="cart-list" v-for="(cart) in cartInfoList" :key="cart.id">
+        <ul class="cart-list" v-for="cart in cartInfoList" :key="cart.id">
           <li class="cart-list-con1">
-            <input type="checkbox" name="chk_list" :checked="cart.isChecked==1"/>
+            <input
+              type="checkbox"
+              name="chk_list"
+              :checked="cart.isChecked == 1"
+              @change="updateChecked(cart,$event)"
+            />
           </li>
           <li class="cart-list-con2">
             <img :src="cart.imgUrl" />
             <div class="item-msg">
-              {{cart.skuName}}
+              {{ cart.skuName }}
             </div>
           </li>
           <li class="cart-list-con4">
-            <span class="price">{{cart.skuPrice}}</span>
+            <span class="price">{{ cart.skuPrice }}</span>
           </li>
           <li class="cart-list-con5">
-            <a href="javascript:void(0)" class="mins">-</a>
+            <a
+              href="javascript:void(0)"
+              class="mins"
+              @click="handler('minus', -1, cart)"
+              >-</a
+            >
             <input
               autocomplete="off"
               type="text"
               minnum="1"
               class="itxt"
               :value="cart.skuNum"
+              @change="handler('change', $event.target.value * 1, cart)"
             />
-            <a href="javascript:void(0)" class="plus">+</a>
+            <a
+              href="javascript:void(0)"
+              class="plus"
+              @click="handler('add', 1, cart)"
+              >+</a
+            >
           </li>
           <li class="cart-list-con6">
-            <span class="sum">{{cart.skuNum * cart.skuPrice}}</span>
+            <span class="sum">{{ cart.skuNum * cart.skuPrice }}</span>
           </li>
           <li class="cart-list-con7">
-            <a href="#none" class="sindelet">删除</a>
+            <a @click="deleteCartById(cart)" class="sindelet">删除</a>
             <br />
             <a href="#none">移到收藏</a>
           </li>
@@ -48,11 +64,11 @@
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input class="chooseAll" type="checkbox" :checked="isAllCheck"/>
+        <input class="chooseAll" type="checkbox" :checked="isAllCheck" />
         <span>全选</span>
       </div>
       <div class="option">
-        <a href="#none">删除选中的商品</a>
+        <a @click="deleteAllCheckedCart">删除选中的商品</a>
         <a href="#none">移到我的关注</a>
         <a href="#none">清除下柜商品</a>
       </div>
@@ -60,7 +76,7 @@
         <div class="chosed">已选择 <span>0</span>件商品</div>
         <div class="sumprice">
           <em>总价（不含运费） ：</em>
-          <i class="summoney">{{totalPrice}}</i>
+          <i class="summoney">{{ totalPrice }}</i>
         </div>
         <div class="sumbtn">
           <a class="sum-btn" href="###" target="_blank">结算</a>
@@ -71,37 +87,110 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
-
+import { mapGetters } from "vuex";
+import throttle from "lodash/throttle";
 
 export default {
   name: "ShopCart",
-  mounted(){
-    this.getDate();
+  mounted() {
+    this.getData();
   },
-  methods:{
+  methods: {
     //获取个人购物车记录
-    getDate(){
-      this.$store.dispatch('getCartList');
+    getData() {
+      this.$store.dispatch("getCartList");
+    },
+    //修改某个商品个数
+    handler: throttle(async function (type, disNum, cart) {
+      // 分情况执行
+      switch (type) {
+        //加号
+        case "add":
+          // 带给服务器变化量
+          disNum = 1;
+          break;
+        case "minus":
+          // if(cart.skuNum > 1){
+          //   disNum = -1;
+          // }else{
+          //   //产品个数小于等于一
+          //   disNum = 0;
+          // }
+          disNum = cart.skuNum > 1 ? -1 : 0;
+          break;
+        case "change":
+          // 判断是否非法
+          if (isNaN(disNum) || disNum < 1) {
+            disNum = 0;
+          } else {
+            disNum = parseInt(disNum) - cart.skuNum;
+          }
+      }
+
+      // 派发action
+      try {
+        //代表的是修改成功
+        this.$store.dispatch("addOrUpdateShopCart", {
+          skuId: cart.skuId,
+          skuNum: disNum,
+        });
+        // 获取更新完成的数据进行展示
+        this.getData();
+      } catch (error) {}
+    }, 500),
+    // 删除某个产品
+    async deleteCartById(cart) {
+      try {
+        await this.$store.dispatch("deleteCartListBySkuId", cart.skuId);
+      } catch (error) {
+        alert(error.message);
+      }
+      this.getData();
+    },
+
+    // 修改某个产品状态
+    async updateChecked(cart,event){
+      try{
+      // 带给服务器的ischecked不是布尔值
+      // 判断
+      let checked = event.target.checked ? "1":"0"
+      this.$store.dispatch('updateCheckedById',{skuId:cart.skuId,isChecked:checked});
+      this.getData();
+      }catch(error){
+        // 如果失败
+        alert(error.message)
+      }
+    },
+
+    // 删除全部选中的商品
+    async deleteAllCheckedCart(){
+      // 派发一个action
+      try {
+        this.$store.dispatch('deleteCheckedCart');
+        this.getData();
+      } catch (error) {
+        alert(error.message)
+      }
     }
   },
-  computed:{
-    ...mapGetters(['cartList']),
+  computed: {
+    ...mapGetters(["cartList"]),
     //购物车数据
-    cartInfoList(){
-      return this.cartList.cartInfoList||[];
+    cartInfoList() {
+      return this.cartList.cartInfoList || [];
     },
     //计算总价
-    totalPrice(){
+    totalPrice() {
       let sum = 0;
-      this.cartInfoList.forEach(item=>{
-        sum+=item.skuNum * item.skuPrice;
+      this.cartInfoList.forEach((item) => {
+          sum += item.skuNum * item.skuPrice;
       });
       return sum;
     },
-    isAllCheck(){
-      return this.cartInfoList.every(item=>item.isChecked==1);
-    }
+    isAllCheck() {
+      //遍历数组里面的ischecked属性
+      return this.cartInfoList.every((item) => item.isChecked == 1);
+    },
   },
 };
 </script>
@@ -185,7 +274,6 @@ export default {
             line-height: 18px;
           }
         }
-
 
         .cart-list-con4 {
           width: 10%;

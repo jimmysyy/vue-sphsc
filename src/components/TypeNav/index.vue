@@ -73,7 +73,7 @@
 import { mapState } from "vuex";
 //引入方式：是把lodash全部功能函数引入
 // import _ from 'lodash';
-//按需引入lodash,throttle不要用箭头函数
+//按需引入lodash,throttle不要用箭头函数,节流
 import throttle from "lodash/throttle";
 
 export default {
