@@ -44,10 +44,20 @@ const actions = {
         let PromiseAll = [];
         getters.cartList.cartInfoList.forEach(item=>{
             let result =  item.isChecked==1?dispatch('deleteAllCheckedCart',item.skuId):'';
-            PromiseAll.push(Promise);
+            PromiseAll.push(result);
         });
         // 返回结果要都成功，有一个失败即返回失败结果
         return Promise.all(PromiseAll)
+    },
+
+    // 修改全部产品的状态
+    updateAllCartIsChecked({dispatch,state},isChecked){
+        let promiseAll = [];
+        state.cartList[0].cartInfoList.forEach(item=>{
+            let promise =  dispatch('updateCheckedById',{skuId:item.skuId,isChecked});
+            promiseAll.push(promise);
+        });
+        return Promise.all(promiseAll);
     }
 };
 const getters = {
