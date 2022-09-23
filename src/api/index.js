@@ -51,4 +51,12 @@ export const reqUserRegister =(data)=>requests({url:`/user/passport/register`,da
 
 // 登录
 // /api/user/passport/login method:post
-export const reqUserLogin = (data) =>requests({url:`/user/passport/login`,data,method:'post'})
+export const reqUserLogin = (data) =>requests({url:`/user/passport/login`,data,method:'post'});
+
+// 获取用户信息(带着用户token获取用户信息)
+// api/user/passport/auth/getUserInfo
+export const reqUserInfo = ()=>requests({url:`/user/passport/auth/getUserInfo`,method:'get'});
+
+// 推出登录
+// /api/user/passport/logout get
+export const reqLogout = ()=>requests({url:`/user/passport/logout`,method:'get'});

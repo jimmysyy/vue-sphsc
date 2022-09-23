@@ -35,10 +35,14 @@
     mounted(){
       //派发action,获取floor数据
       this.$store.dispatch("getFloorList");
+
+      // 获取用户信息在首页展示
+      // 把之前游客的临时id改成token传给后台，去api里的拦截器里修改
+      this.$store.dispatch("getUserInfo");
     },
     computed:{
       ...mapState({
-        floorList:state => state.home.floorList
+        floorList:state => state.home.floorList,
       })
     }
   }
