@@ -69,6 +69,8 @@ const actions = {
         let result = await reqUserInfo();
         if (result.code==200) {
             commit("GETUSERINFO",result.data)
+        }else{
+            return Promise.reject(new Error('faile'));
         }
 
         // 这里会因为token要先登录后才有，要存储与localstorage

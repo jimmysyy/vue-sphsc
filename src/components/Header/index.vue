@@ -62,7 +62,7 @@ export default {
   name: "",
   data(){
     return{
-      keyword:''
+      keyword:'',
     }
   },
   methods:{
@@ -133,7 +133,17 @@ export default {
     userName(){
       return this.$store.state.user.UserInfo.name;
     }
-  }
+  },
+
+  // watch:{
+  //   userName:{
+  //     handler(){
+  //       this.$nextTick(()=>{
+  //         return this.$store.state.user.UserInfo.name;
+  //       })
+  //     }
+  //   }
+  // }
 };
 </script>
 

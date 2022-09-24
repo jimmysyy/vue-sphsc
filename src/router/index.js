@@ -7,6 +7,9 @@ import routes from '@/router/routes'
 Vue.use(VueRouter)
 //引入路由组件
 
+// 引入store
+import store from '@/store'
+
 
 //把VueRouter原型对象的push，先保存一份
 let originPush = VueRouter.prototype.push;
@@ -37,10 +40,50 @@ VueRouter.prototype.replace = function (locaton, resolve, reject) {
     }
 }
 
-export default new VueRouter({
+let router =  new VueRouter({
     routes,
     scrollBehavior (to, from, savedPosition) {
         // return 期望滚动到哪个的位置
         return {y:0}
     }
-})
+});
+
+// 全局守卫：前置守卫（在路由跳转之前判断）
+router.beforeEach(async (to,from,next)=>{
+    // to:可以获取跳转到哪个路由信息
+    // from:可以获取从哪个路由而来的信息
+    // next：放行函数 next(path)放行到指定路由      next(false)
+    
+    // 用户登录了有token
+    let token = store.state.user.token;
+    let name = store.state.user.UserInfo.name;
+    // 登录成功
+    if (token) {
+        // 禁止去login
+        if (to.path=='/login') {
+            next('/home')
+        }else{
+            // 登录，去home,search,detail ,shopcart
+            // 如果用户名已有
+            if(name){
+                // 没有用户信息，派发action让仓库存储用户信息再跳转
+                next();
+            }else{
+                try {
+                    await store.dispatch("getUserInfo");
+                    next();
+                } catch (error) {
+                    // token失效了，重新登录
+                    // 清除token
+                    await store.dispatch('userLogout');
+                    next('/login')
+                }
+            }
+        }
+    } else {
+        next();
+    }
+});
+
+
+export default router
