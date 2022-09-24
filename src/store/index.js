@@ -10,6 +10,7 @@ import search from "./search";
 import detail from "./detail";
 import shopcart from "./shopcart";
 import user from "./user";
+import trade from "./trade";
 // //state：仓库存储数据的地方
 // const state = {
 //     count:1,
@@ -38,6 +39,7 @@ export default new Vuex.Store({
         search,
         detail,
         shopcart,
-        user
+        user,
+        trade
     }
 })
