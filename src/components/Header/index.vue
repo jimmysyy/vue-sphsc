@@ -58,6 +58,7 @@
 </template>
 
 <script>
+
 export default {
   name: "",
   data(){
@@ -132,7 +133,9 @@ export default {
   computed:{
     userName(){
       return this.$store.state.user.UserInfo.name;
-    }
+      
+    },
+    
   },
 
   // watch:{
@@ -145,6 +148,7 @@ export default {
   //   }
   // }
 };
+
 </script>
 
 <style lang='less' scoped>
