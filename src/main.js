@@ -38,6 +38,19 @@ import store from './store';
 
 // 统一接口api文件夹里面的请求函数
 import * as API from '@/api'
+import atm from '@/assets/1.jpg'
+
+// 引入图片懒加载插件
+import VueLazyload from 'vue-lazyload';
+
+Vue.use(VueLazyload,{
+  // 懒加载默认图片
+  loading:atm,
+});
+
+// 引入自定义插件
+// 引入表单校验插件
+import "@/plugins/validate"
 
 
 // //因为分别暴露
